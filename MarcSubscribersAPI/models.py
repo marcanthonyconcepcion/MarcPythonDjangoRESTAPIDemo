@@ -10,3 +10,7 @@ class Subscriber(models.Model):
 
     def __str__(self):
         return self.email_address
+
+
+class Token(models.Model):
+    token = models.CharField(max_length=60, blank=True)
