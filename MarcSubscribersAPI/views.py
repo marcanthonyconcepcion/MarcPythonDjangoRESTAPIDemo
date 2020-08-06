@@ -5,7 +5,6 @@ from .serializers import SubscriberUnauthenticatedProfileSerializer
 from .serializers import SubscriberFullCredentialsSerializer
 from django.core.mail import send_mail
 from django.conf import settings
-#from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 from .models import Subscriber
 from .models import Token
 import shlex, subprocess, json
@@ -14,7 +13,6 @@ import shlex, subprocess, json
 class SubscriberViewSet(viewsets.ModelViewSet):
     queryset = Subscriber.objects.all().order_by('email_address')
     serializer_class = SubscriberProfileSerializer
-    #permission_classes = [permissions.AllowAny, TokenHasReadWriteScope]
 
     # GET to list all subscribers.
     def list(self, request):
