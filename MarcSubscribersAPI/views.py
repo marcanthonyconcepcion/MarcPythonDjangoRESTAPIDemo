@@ -25,6 +25,9 @@ class SubscriberViewSet(viewsets.ModelViewSet):
                 serializer = SubscriberProfileSerializer(Subscriber.objects.all(), many=True)
                 output_message["user"] = serializer.data
                 return Response(output_message, status=status.HTTP_200_OK)
+            else:
+                output_message["errors"].append({"token": ["Invalid token."]})
+                return Response(output_message, status=status.HTTP_401_UNAUTHORIZED)
         serializer = SubscriberUnauthenticatedProfileSerializer(Subscriber.objects.all(), many=True)
         output_message["user"] = serializer.data
         return Response(output_message, status=status.HTTP_200_OK)
@@ -43,32 +46,56 @@ class SubscriberViewSet(viewsets.ModelViewSet):
             output_message["errors"].append(serializer.errors)
             return Response(output_message, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
-        self.send_token(email)
+        token_value = self.generate_token()
+        # Google SMTP is now strict against letting any app automatically send e-mails.
+        #self.send_email(email, token_value)
         output_message["user"] = serializer.data
         return Response(output_message, status=status.HTTP_201_CREATED)
 
-    # GET with index to for user activation.
-    def retrieve(self, request, pk=None):
+    # PUT with index to for user activation.
+    def update(self, request, pk=None):
         output_message = self.generate_initial_output_message()
         if 'token' not in request.data:
-            output_message["errors"].append({"system": ["Subscriber is not activated. Token required."]})
+            output_message["errors"].append({"token": ["Subscriber is not activated. Token required."]})
             return Response(output_message, status=status.HTTP_401_UNAUTHORIZED)
         entry = Subscriber.objects.get(pk=pk)
         token_value = request.data.get('token')
         if not Token.objects.filter(token=token_value).exists():
-            output_message["errors"].append({"system": ["Subscriber is not activated. Invalid token."]})
+            output_message["errors"].append({"token": ["Subscriber is not activated. Invalid token."]})
             return Response(output_message, status=status.HTTP_401_UNAUTHORIZED)
+        if entry.activation:
+            output_message["errors"].append({"activation": ["Subscriber has already been activated before."]})
+            return Response(output_message, status=status.HTTP_400_BAD_REQUEST)
         entry.activation = True
         entry.save()
         serializer = SubscriberProfileSerializer(entry)
         output_message["user"] = serializer.data
         return Response(output_message, status=status.HTTP_200_OK)
 
-    # PUT should not be used.
-    def update(self, request, pk=None):
+    # GET with index for user login.
+    def retrieve(self, request, pk=None):
         output_message = self.generate_initial_output_message()
-        output_message["errors"].append({"system": ["Illegal Operation."]})
-        return Response(output_message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        if 'email_address' not in request.data:
+            output_message["errors"].append({"email_address": ["Field required."]})
+        if 'password' not in request.data:
+            output_message["errors"].append({"password": ["Field required."]})
+        if len(output_message["errors"]) > 0:
+            return Response(output_message, status=status.HTTP_400_BAD_REQUEST)
+        entry = Subscriber.objects.get(pk=pk)
+        email = request.data.get('email_address')
+        password = request.data.get('password')
+        if entry.email_address != email:
+            output_message["errors"].append({"email_address": ["E-mail does not match the user's."]})
+            return Response(output_message, status=status.HTTP_401_UNAUTHORIZED)
+        if entry.password != password:
+            output_message["errors"].append({"password": ["Password does not match the user's."]})
+            return Response(output_message, status=status.HTTP_401_UNAUTHORIZED)
+        if not entry.activation:
+            output_message["errors"].append({"email_address": ["User has not been activated yet."]})
+            return Response(output_message, status=status.HTTP_401_UNAUTHORIZED)
+        token_value = self.generate_token()
+        output_message["user"] = dict({"token": token_value})
+        return Response(output_message, status=status.HTTP_200_OK)
 
     # PATCH to change password
     def partial_update(self, request, pk=None):
@@ -114,7 +141,7 @@ class SubscriberViewSet(viewsets.ModelViewSet):
         recipient_list = [email, ]
         send_mail(subject, message, email_from, recipient_list)
 
-    def send_token(self, email_address):
+    def generate_token(self):
         super_username = "concepcion"
         super_password = "marcpassword"
         oauth2_token_url = "http://localhost:8000/o/token/"
@@ -129,4 +156,4 @@ class SubscriberViewSet(viewsets.ModelViewSet):
         token_value = json.loads(stdout)["access_token"]
         tokens = Token(token=token_value)
         tokens.save()
-        #self.send_email(email_address, token)
+        return token_value
