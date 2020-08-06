@@ -1,15 +1,16 @@
-from rest_framework import status
-from rest_framework import viewsets
+from rest_framework import status, viewsets, permissions
 from rest_framework.response import Response
 from .serializers import SubscriberSerializer
-from .models import Subscriber
 from django.core.mail import send_mail
 from django.conf import settings
+from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
+from .models import Subscriber
 
 
 class SubscriberViewSet(viewsets.ModelViewSet):
     queryset = Subscriber.objects.all().order_by('email_address')
     serializer_class = SubscriberSerializer
+#    permission_classes = [permissions.IsAuthenticated, TokenHasReadWriteScope]
 
     # GET to list all subscribers.
     def list(self, request):
