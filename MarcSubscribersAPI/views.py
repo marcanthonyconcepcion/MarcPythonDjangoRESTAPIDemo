@@ -8,6 +8,7 @@ from django.conf import settings
 from .models import Subscriber
 from .models import Token
 import shlex, subprocess, json
+from smtplib import SMTPAuthenticationError
 
 
 class SubscriberViewSet(viewsets.ModelViewSet):
@@ -43,16 +44,22 @@ class SubscriberViewSet(viewsets.ModelViewSet):
         if not serializer.is_valid():
             output_message["errors"].append(serializer.errors)
             return Response(output_message, status=status.HTTP_400_BAD_REQUEST)
-        serializer.save()
         token_value = self.generate_token()
-        # Google SMTP is now strict against letting any app automatically send e-mails.
-        #self.send_email(email, token_value)
+        try:
+            self.send_email(email, token_value)
+        except SMTPAuthenticationError:
+            output_message["errors"].append({"token": ["Server error. Fail to e-mail token. Subscriber not created."]})
+            return Response(output_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        serializer.save()
         output_message["user"] = serializer.data
         return Response(output_message, status=status.HTTP_201_CREATED)
 
     # PUT with index to for user activation.
     def update(self, request, pk=None):
         output_message = self.generate_initial_output_message()
+        if not Subscriber.objects.filter(pk=pk).exists():
+            output_message["errors"].append({"email_address": ["Subscriber does not exist."]})
+            return Response(output_message, status=status.HTTP_404_NOT_FOUND)
         if 'token' not in request.data:
             output_message["errors"].append({"token": ["Subscriber is not activated. Token required."]})
             return Response(output_message, status=status.HTTP_401_UNAUTHORIZED)
@@ -73,6 +80,9 @@ class SubscriberViewSet(viewsets.ModelViewSet):
     # GET with index for user login.
     def retrieve(self, request, pk=None):
         output_message = self.generate_initial_output_message()
+        if not Subscriber.objects.filter(pk=pk).exists():
+            output_message["errors"].append({"email_address": ["Subscriber does not exist."]})
+            return Response(output_message, status=status.HTTP_404_NOT_FOUND)
         if 'email_address' not in request.data:
             output_message["errors"].append({"email_address": ["Field required."]})
         if 'password' not in request.data:
@@ -98,6 +108,9 @@ class SubscriberViewSet(viewsets.ModelViewSet):
     # PATCH to change password
     def partial_update(self, request, pk=None):
         output_message = self.generate_initial_output_message()
+        if not Subscriber.objects.filter(pk=pk).exists():
+            output_message["errors"].append({"email_address": ["Subscriber does not exist."]})
+            return Response(output_message, status=status.HTTP_404_NOT_FOUND)
         if 'password' not in request.data:
             output_message["errors"].append({"password": ["Field required."]})
         if 'new_password' not in request.data:
@@ -125,7 +138,10 @@ class SubscriberViewSet(viewsets.ModelViewSet):
     # DELETE should not be used.
     def destroy(self, request, pk=None):
         output_message = self.generate_initial_output_message()
-        output_message["errors"].append({"system": ["Illegal Operation."]})
+        if not Subscriber.objects.filter(pk=pk).exists():
+            output_message["errors"].append({"email_address": ["Subscriber does not exist."]})
+            return Response(output_message, status=status.HTTP_404_NOT_FOUND)
+        output_message["errors"].append({"email_address": ["Deleting your account through this API is not allowed."]})
         return Response(output_message, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def generate_initial_output_message(self):

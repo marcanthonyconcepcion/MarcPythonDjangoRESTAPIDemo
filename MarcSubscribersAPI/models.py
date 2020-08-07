@@ -14,3 +14,6 @@ class Subscriber(models.Model):
 
 class Token(models.Model):
     token = models.CharField(max_length=60, blank=True)
+
+    def __str__(self):
+        return self.token

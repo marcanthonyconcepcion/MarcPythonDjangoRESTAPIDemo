@@ -154,6 +154,39 @@ X-Frame-Options: DENY
     ]
 }
 
+C:\>http get http://127.0.0.1:8000/subscribers/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
+HTTP/1.1 200 OK
+Allow: GET, POST, HEAD, OPTIONS
+Content-Length: 248
+Content-Type: application/json
+Date: Fri, 07 Aug 2020 04:12:10 GMT
+Referrer-Policy: same-origin
+Server: WSGIServer/0.2 CPython/3.8.5
+Vary: Accept, Cookie
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+
+{
+    "errors": [],
+    "user": [
+        {
+            "email_address": "marc@company.com",
+            "first_name": "Marc",
+            "last_name": "Concepcion"
+        },
+        {
+            "email_address": "kevin@company.com",
+            "first_name": "",
+            "last_name": ""
+        },
+        {
+            "email_address": "roy@company.com",
+            "first_name": "Roy",
+            "last_name": "Berry"
+        }
+    ]
+}
+
 ----------
 Case 4-2: Without Token
 ----------
@@ -178,6 +211,33 @@ X-Frame-Options: DENY
     "user": [
         {
             "first_name": "Marc"
+        }
+    ]
+}
+
+C:\>http get http://127.0.0.1:8000/subscribers/
+HTTP/1.1 200 OK
+Allow: GET, POST, HEAD, OPTIONS
+Content-Length: 83
+Content-Type: application/json
+Date: Fri, 07 Aug 2020 04:12:45 GMT
+Referrer-Policy: same-origin
+Server: WSGIServer/0.2 CPython/3.8.5
+Vary: Accept, Cookie
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+
+{
+    "errors": [],
+    "user": [
+        {
+            "first_name": "Marc"
+        },
+        {
+            "first_name": ""
+        },
+        {
+            "first_name": "Roy"
         }
     ]
 }
@@ -215,7 +275,9 @@ X-Frame-Options: DENY
 ============================================
 ERROR SCENARIOS
 ============================================
+----------
 Error 1: Attempt to delete a subscriber which is not part of the requirements.
+----------
 
 C:\>http delete http://127.0.0.1:8000/subscribers/15/
 HTTP/1.1 405 Method Not Allowed
@@ -239,8 +301,9 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-
+----------
 Error 2: Attempts to access a non-existent user ID
+----------
 C:\>http get http://127.0.0.1:8000/subscribers/100/ email_address="marc@company.com" password="marcpassword"
 HTTP/1.1 404 Not Found
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -332,11 +395,10 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-
+----------
 Error Handling on Requirement 1: User Subscriber Registration
-
+----------
 Error 1-1: Attempt to register to an existing subscriber
-
 C:\>http post http://127.0.0.1:8000/subscribers/ email_address="marc@company.com" password="marcpassword" first_name="Marc" last_name="Concepcion"
 HTTP/1.1 409 Conflict
 Allow: GET, POST, HEAD, OPTIONS
@@ -361,7 +423,6 @@ X-Frame-Options: DENY
 }
 
 Error 1-2: Attempt to register without either the required E-mail address or Password 
-
 C:\>http post http://127.0.0.1:8000/subscribers/ email_address="roy@company.com" first_name="Roy" last_name="Berry"
 HTTP/1.1 400 Bad Request
 Allow: GET, POST, HEAD, OPTIONS
@@ -434,10 +495,33 @@ X-Frame-Options: DENY
     "user": "null"
 }
 
+Error 1-3: Subscriber Web Service fails to e-mail token due to SMTP issues with e-mail server.
+C:\>http post http://127.0.0.1:8000/subscribers/ email_address="roy@company.com" first_name="Roy" last_name="Berry" password="roypassword"
+HTTP/1.1 500 Internal Server Error
+Allow: GET, POST, HEAD, OPTIONS
+Content-Length: 100
+Content-Type: application/json
+Date: Fri, 07 Aug 2020 04:05:05 GMT
+Referrer-Policy: same-origin
+Server: WSGIServer/0.2 CPython/3.8.5
+Vary: Accept, Cookie
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+
+{
+    "errors": [
+        {
+            "token": [
+                "Server error. Fail to e-mail token. Subscriber not created."
+            ]
+        }
+    ],
+    "user": "null"
+}
+----------
 Error Handling on Requirement 2: User Activation
-
+----------
 Error 2-1: Attempt to activate an already activated subscriber
-
 C:\>http put http://127.0.0.1:8000/subscribers/15/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -462,7 +546,6 @@ X-Frame-Options: DENY
 }
 
 Error 2-2: Attempt to activate without a token
-
 C:\>http put http://127.0.0.1:8000/subscribers/15/
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -487,7 +570,6 @@ X-Frame-Options: DENY
 }
 
 Error 2-3: Attempt to activate with an invalid token
-
 C:\>http put http://127.0.0.1:8000/subscribers/15/ token=invalid
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -510,11 +592,10 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-
+----------
 Error Handling on Requirement 3: User Login
-
+----------
 Error 3-1: Attempt to login with neither the required e-mail address nor the password
-
 C:\>http get http://127.0.0.1:8000/subscribers/15/ email_address="marc@company.com"
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -590,7 +671,6 @@ X-Frame-Options: DENY
 }
 
 Error 3-2: Attempt to login with an invalid user name or password
-
 C:\>http get http://127.0.0.1:8000/subscribers/15/ email_address="nonexistent@company.com" password="none"
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -614,7 +694,6 @@ X-Frame-Options: DENY
     "user": "null"
 }
 
-
 C:\>http get http://127.0.0.1:8000/subscribers/15/ email_address="marc@company.com" password="wrong"
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -637,9 +716,9 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-
+----------
 Error 3-3: Attempt to login with an unactivated subscriber account
-
+----------
 C:\>http get http://127.0.0.1:8000/subscribers/17/ email_address="kevin@company.com" password="kevinpassword"
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -662,11 +741,10 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-
+----------
 Error Handling on Requirement 4: Users List
-
+----------
 Error 4-1: Attempt to request for a users list giving an invalid token
-
 C:\>http get http://127.0.0.1:8000/subscribers/ token=invalid
 HTTP/1.1 401 Unauthorized
 Allow: GET, POST, HEAD, OPTIONS
@@ -689,11 +767,10 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-
+----------
 Error Handling on Requirement 5: Change Password
-
+----------
 Error 5-1: Attempt to change password giving an invalid token
-
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="marcpassword" new_password="marcnewpassword" token=invalid
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -718,7 +795,6 @@ X-Frame-Options: DENY
 }
 
 Error 5-2: Attempt to change password giving an invalid current password
-
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="wrongpassword" new_password="marcnewpassword" token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -743,7 +819,6 @@ X-Frame-Options: DENY
 }
 
 Error 5-3: Attempt to change password giving insufficient parameters
-
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="marcpassword" new_password="marcnewpassword"
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
