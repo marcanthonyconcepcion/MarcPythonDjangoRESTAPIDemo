@@ -7,9 +7,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .models import Subscriber
 from .models import Token
-import shlex, subprocess, json
 from smtplib import SMTPAuthenticationError
-from .api_settings import token_granting_configuration
+from .token_generator import generate_token, TokenGrantingError
 
 
 class SubscriberViewSet(viewsets.ModelViewSet):
@@ -46,13 +45,18 @@ class SubscriberViewSet(viewsets.ModelViewSet):
             output_message["errors"].append(serializer.errors)
             return Response(output_message, status=status.HTTP_400_BAD_REQUEST)
         try:
-            token_value = self.generate_token()
+            token_value = generate_token()
+            tokens = Token(token=token_value)
+            tokens.save()
+        except TokenGrantingError:
+            output_message["errors"].append({"token": ["Internal server error in generating token. "
+                                                       "Subscriber not created. "
+                                                       "No e-mail will be sent."]})
+            return Response(output_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        try:
             self.send_email(email, token_value)
         except SMTPAuthenticationError:
             output_message["errors"].append({"token": ["Server error. Fail to e-mail token. Subscriber not created."]})
-            return Response(output_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        except:
-            output_message["errors"].append({"token": ["Internal server error in generating token. Subscriber not created. No e-mail will be sent."]})
             return Response(output_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         serializer.save()
         output_message["user"] = serializer.data
@@ -106,10 +110,12 @@ class SubscriberViewSet(viewsets.ModelViewSet):
             output_message["errors"].append({"email_address": ["User has not been activated yet."]})
             return Response(output_message, status=status.HTTP_401_UNAUTHORIZED)
         try:
-            token_value = self.generate_token()
+            token_value = generate_token()
+            tokens = Token(token=token_value)
+            tokens.save()
             output_message["user"] = dict({"token": token_value})
             return Response(output_message, status=status.HTTP_200_OK)
-        except:
+        except TokenGrantingError:
             output_message["errors"].append({"token": ["Login failure. Internal server error in generating token."]})
             return Response(output_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -157,22 +163,8 @@ class SubscriberViewSet(viewsets.ModelViewSet):
 
     def send_email(self, email, token):
         subject = 'Your token authentication to access your subscriber account.'
-        message = 'Here is your token authentication to validate and to access your subscriber account.\n{token}.'.format(token=token)
+        message = 'Here is your token authentication to validate and to ' \
+                  'access your subscriber account.\n{token}.'.format(token=token)
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [email, ]
         send_mail(subject, message, email_from, recipient_list)
-
-    def generate_token(self):
-        curl_command = "curl -X POST -d 'grant_type=password&username={username}&password={password}' -u{client_id}:{client_secret} {token_granting_url}" \
-            .format(username=token_granting_configuration["super_username"],
-                    password=token_granting_configuration["super_password"],
-                    client_id=token_granting_configuration["client_id"],
-                    client_secret=token_granting_configuration["client_secret"],
-                    token_granting_url=token_granting_configuration["token_granting_url"])
-        args = shlex.split(curl_command)
-        process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = process.communicate()
-        token_value = json.loads(stdout)["access_token"]
-        tokens = Token(token=token_value)
-        tokens.save()
-        return token_value
