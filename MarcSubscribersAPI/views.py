@@ -45,7 +45,6 @@ class SubscriberViewSet(viewsets.ModelViewSet):
         try:
             token_value = generate_token()
             tokens = Token(token=token_value)
-            tokens.save()
         except TokenGrantingError:
             output_message["errors"].append({"token": ["Internal server error in generating token. "
                                                        "Subscriber not created. "
@@ -56,6 +55,7 @@ class SubscriberViewSet(viewsets.ModelViewSet):
         except SMTPAuthenticationError:
             output_message["errors"].append({"token": ["Server error. Fail to e-mail token. Subscriber not created."]})
             return Response(output_message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        tokens.save()
         serializer.save()
         output_message["user"] = serializer.data
         return Response(output_message, status=status.HTTP_201_CREATED)
