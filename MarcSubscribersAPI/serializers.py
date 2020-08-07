@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import Subscriber
+from .models import Subscriber, Token
+
+
+class TokenSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Token
+        fields = ('token',)
 
 
 class SubscriberProfileSerializer(serializers.HyperlinkedModelSerializer):

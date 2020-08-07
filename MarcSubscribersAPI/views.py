@@ -1,12 +1,10 @@
 from rest_framework import status, viewsets, permissions
 from rest_framework.response import Response
-from .serializers import SubscriberProfileSerializer
-from .serializers import SubscriberUnauthenticatedProfileSerializer
-from .serializers import SubscriberFullCredentialsSerializer
+from .serializers import SubscriberProfileSerializer, SubscriberUnauthenticatedProfileSerializer
+from .serializers import SubscriberFullCredentialsSerializer, TokenSerializer
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Subscriber
-from .models import Token
+from .models import Subscriber, Token
 from smtplib import SMTPAuthenticationError
 from .token_generator import generate_token, TokenGrantingError
 
@@ -113,7 +111,8 @@ class SubscriberViewSet(viewsets.ModelViewSet):
             token_value = generate_token()
             tokens = Token(token=token_value)
             tokens.save()
-            output_message["user"] = dict({"token": token_value})
+            serializer = TokenSerializer(tokens)
+            output_message["user"] = serializer.data
             return Response(output_message, status=status.HTTP_200_OK)
         except TokenGrantingError:
             output_message["errors"].append({"token": ["Login failure. Internal server error in generating token."]})
