@@ -853,7 +853,7 @@ Error 5-2: Attempt to change password giving an invalid current password
 
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="wrongpassword" new_password="marcnewpassword" token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
 
-HTTP/1.1 400 Bad Request
+HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 66
 Content-Type: application/json

@@ -140,7 +140,7 @@ class SubscriberViewSet(viewsets.ModelViewSet):
         password = request.data.get('password')
         if entry.password != password:
             output_message["errors"].append({"password": ["Invalid user password."]})
-            return Response(output_message, status=status.HTTP_400_BAD_REQUEST)
+            return Response(output_message, status=status.HTTP_401_UNAUTHORIZED)
         new_password = request.data.get('new_password')
         entry.password = new_password
         entry.save()
