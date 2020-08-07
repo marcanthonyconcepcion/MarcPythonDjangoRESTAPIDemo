@@ -148,9 +148,8 @@ class SubscriberViewSet(viewsets.ModelViewSet):
         return {"user": "null", "errors": []}
 
     def send_email(self, email, token):
-        subject = 'send_email'
-        message = 'Here is your token authentication to validate your subscriber account.\n{token}.'.format(
-            token=token)
+        subject = 'Your token authentication to access your subscriber account.'
+        message = 'Here is your token authentication to validate and to access your subscriber account.\n{token}.'.format(token=token)
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [email, ]
         send_mail(subject, message, email_from, recipient_list)
