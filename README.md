@@ -504,6 +504,32 @@ X-Frame-Options: DENY
     "user": "null"
 }
 
+Error 1-4: Internal server error due to failure to grant token by the authentication server
+
+C:\>http post http://127.0.0.1:8000/subscribers/ email_address="gerry@company.com" password="gerrypassword"
+
+HTTP/1.1 500 Internal Server Error
+Allow: GET, POST, HEAD, OPTIONS
+Content-Length: 131
+Content-Type: application/json
+Date: Fri, 07 Aug 2020 06:46:37 GMT
+Referrer-Policy: same-origin
+Server: WSGIServer/0.2 CPython/3.8.5
+Vary: Accept, Cookie
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+
+{
+    "errors": [
+        {
+            "token": [
+                "Internal server error in generating token. Subscriber not created. No e-mail will be sent."
+            ]
+        }
+    ],
+    "user": "null"
+}
+
 Error Handling on Requirement 2: User Activation
 
 Error 2-1: Attempt to activate an already activated subscriber
@@ -735,6 +761,32 @@ X-Frame-Options: DENY
         {
             "email_address": [
                 "User has not been activated yet."
+            ]
+        }
+    ],
+    "user": "null"
+}
+
+Error 3-4: Internal server error due to failure to grant token by the authentication server
+
+C:\>http get http://127.0.0.1:8000/subscribers/15/ email_address="marc@company.com" password="marcpassword"
+
+HTTP/1.1 500 Internal Server Error
+Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
+Content-Length: 82
+Content-Type: application/json
+Date: Fri, 07 Aug 2020 06:31:49 GMT
+Referrer-Policy: same-origin
+Server: WSGIServer/0.2 CPython/3.8.5
+Vary: Accept, Cookie
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+
+{
+    "errors": [
+        {
+            "token": [
+                "Login failure. Internal error in generating token."
             ]
         }
     ],
