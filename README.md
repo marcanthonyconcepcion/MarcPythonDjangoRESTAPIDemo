@@ -6,16 +6,11 @@ HOW TO TEST
 Client Test Tool Used: 
 HTTPie https://httpie.org/
 
-============================================
 FUNCTIONAL TEST SAMPLES
-============================================
+
 Requirement 1: User Subscriber Registration
 
 Case 1-1: E-mail Address, Password, First Name, Last Name provided
-Input:
-http post http://127.0.0.1:8000/subscribers/ email_address="marc@company.com" password="marcpassword" first_name="Marc" last_name="Concepcion"
-
-Output:
 C:\>http post http://127.0.0.1:8000/subscribers/ email_address="marc@company.com" password="marcpassword" first_name="Marc" last_name="Concepcion"
 HTTP/1.1 201 Created
 Allow: GET, POST, HEAD, OPTIONS
@@ -27,7 +22,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [],
     "user": {
@@ -39,11 +33,6 @@ X-Frame-Options: DENY
 }
 
 Case 1-2: Only E-mail Address, Password provided
-
-Input:
-http post http://127.0.0.1:8000/subscribers/ email_address="kevin@company.com" password="kevinpassword"
-
-Output:
 C:\>http post http://127.0.0.1:8000/subscribers/ email_address="kevin@company.com" password="kevinpassword"
 HTTP/1.1 201 Created
 Allow: GET, POST, HEAD, OPTIONS
@@ -55,7 +44,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [],
     "user": {
@@ -66,13 +54,7 @@ X-Frame-Options: DENY
     }
 }
 
-============================================
 Requirement 2: User Activation
-
-Input:
-http put http://127.0.0.1:8000/subscribers/15/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
-
-Output:
 C:\>http put http://127.0.0.1:8000/subscribers/15/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
 HTTP/1.1 200 OK
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -84,7 +66,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [],
     "user": {
@@ -93,16 +74,9 @@ X-Frame-Options: DENY
         "last_name": "Concepcion"
     }
 }
-
-
 Note: The activation field in the Subscribers Model API database is only internal to the server and should never be shown to the user clients. However, the activation flag has been set to True.
-============================================
+
 Requirement 3: User Login
-
-Input:
-http get http://127.0.0.1:8000/subscribers/15/ email_address="marc@company.com" password="marcpassword"
-
-Output:
 C:\Users\concepcion>http get http://127.0.0.1:8000/subscribers/15/ email_address="marc@company.com" password="marcpassword"
 HTTP/1.1 200 OK
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -114,7 +88,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [],
     "user": {
@@ -122,15 +95,8 @@ X-Frame-Options: DENY
     }
 }
 
-============================================
 Requirement 4: Users List
-----------
 Case 4-1: With Token
-----------
-Input:
-http get http://127.0.0.1:8000/subscribers/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
-
-Output:
 C:\>http get http://127.0.0.1:8000/subscribers/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
 HTTP/1.1 200 OK
 Allow: GET, POST, HEAD, OPTIONS
@@ -142,7 +108,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [],
     "user": [
@@ -165,7 +130,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [],
     "user": [
@@ -187,14 +151,8 @@ X-Frame-Options: DENY
     ]
 }
 
-----------
 Case 4-2: Without Token
-----------
-Input:
-http get http://127.0.0.1:8000/subscribers/
-
-Output:
-C:\Users\concepcion>http get http://127.0.0.1:8000/subscribers/
+C:\>http get http://127.0.0.1:8000/subscribers/
 HTTP/1.1 200 OK
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 44
@@ -205,7 +163,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [],
     "user": [
@@ -226,7 +183,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [],
     "user": [
@@ -242,13 +198,7 @@ X-Frame-Options: DENY
     ]
 }
 
-============================================
 Requirement 5: Change Password 
-
-Input:
-http patch http://127.0.0.1:8000/subscribers/15/ password="marcpassword" new_password="marcnewpassword" token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
-
-Output:
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="marcpassword" new_password="marcnewpassword" token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
 HTTP/1.1 200 OK
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -260,7 +210,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [],
     "user": {
@@ -270,15 +219,9 @@ X-Frame-Options: DENY
         "password": "marcnewpassword"
     }
 }
-============================================
 
-============================================
 ERROR SCENARIOS
-============================================
-----------
 Error 1: Attempt to delete a subscriber which is not part of the requirements.
-----------
-
 C:\>http delete http://127.0.0.1:8000/subscribers/15/
 HTTP/1.1 405 Method Not Allowed
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -290,7 +233,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -301,9 +243,8 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-----------
+
 Error 2: Attempts to access a non-existent user ID
-----------
 C:\>http get http://127.0.0.1:8000/subscribers/100/ email_address="marc@company.com" password="marcpassword"
 HTTP/1.1 404 Not Found
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -315,7 +256,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -338,7 +278,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -361,7 +300,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -384,7 +322,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -395,9 +332,8 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-----------
+
 Error Handling on Requirement 1: User Subscriber Registration
-----------
 Error 1-1: Attempt to register to an existing subscriber
 C:\>http post http://127.0.0.1:8000/subscribers/ email_address="marc@company.com" password="marcpassword" first_name="Marc" last_name="Concepcion"
 HTTP/1.1 409 Conflict
@@ -410,7 +346,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -434,7 +369,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -457,7 +391,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -480,7 +413,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -507,7 +439,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -518,9 +449,8 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-----------
+
 Error Handling on Requirement 2: User Activation
-----------
 Error 2-1: Attempt to activate an already activated subscriber
 C:\>http put http://127.0.0.1:8000/subscribers/15/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
 HTTP/1.1 400 Bad Request
@@ -533,7 +463,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -557,7 +486,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -581,7 +509,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -592,9 +519,8 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-----------
+
 Error Handling on Requirement 3: User Login
-----------
 Error 3-1: Attempt to login with neither the required e-mail address nor the password
 C:\>http get http://127.0.0.1:8000/subscribers/15/ email_address="marc@company.com"
 HTTP/1.1 400 Bad Request
@@ -607,7 +533,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -630,7 +555,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -653,7 +577,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -682,7 +605,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -705,7 +627,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -716,9 +637,8 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-----------
+
 Error 3-3: Attempt to login with an unactivated subscriber account
-----------
 C:\>http get http://127.0.0.1:8000/subscribers/17/ email_address="kevin@company.com" password="kevinpassword"
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
@@ -730,7 +650,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -741,9 +660,8 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-----------
+
 Error Handling on Requirement 4: Users List
-----------
 Error 4-1: Attempt to request for a users list giving an invalid token
 C:\>http get http://127.0.0.1:8000/subscribers/ token=invalid
 HTTP/1.1 401 Unauthorized
@@ -756,7 +674,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -767,9 +684,8 @@ X-Frame-Options: DENY
     ],
     "user": "null"
 }
-----------
+
 Error Handling on Requirement 5: Change Password
-----------
 Error 5-1: Attempt to change password giving an invalid token
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="marcpassword" new_password="marcnewpassword" token=invalid
 HTTP/1.1 401 Unauthorized
@@ -782,7 +698,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -806,7 +721,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -830,7 +744,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -853,7 +766,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -876,7 +788,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -899,7 +810,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -927,7 +837,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
@@ -955,7 +864,6 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
-
 {
     "errors": [
         {
