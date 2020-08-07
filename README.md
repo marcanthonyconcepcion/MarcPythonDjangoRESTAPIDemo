@@ -11,7 +11,9 @@ FUNCTIONAL TEST SAMPLES
 Requirement 1: User Subscriber Registration
 
 Case 1-1: E-mail Address, Password, First Name, Last Name provided
+
 C:\>http post http://127.0.0.1:8000/subscribers/ email_address="marc@company.com" password="marcpassword" first_name="Marc" last_name="Concepcion"
+
 HTTP/1.1 201 Created
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 128
@@ -22,6 +24,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [],
     "user": {
@@ -33,7 +36,9 @@ X-Frame-Options: DENY
 }
 
 Case 1-2: Only E-mail Address, Password provided
+
 C:\>http post http://127.0.0.1:8000/subscribers/ email_address="kevin@company.com" password="kevinpassword"
+
 HTTP/1.1 201 Created
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 116
@@ -44,6 +49,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [],
     "user": {
@@ -55,7 +61,9 @@ X-Frame-Options: DENY
 }
 
 Requirement 2: User Activation
+
 C:\>http put http://127.0.0.1:8000/subscribers/15/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
+
 HTTP/1.1 200 OK
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 102
@@ -66,6 +74,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [],
     "user": {
@@ -74,10 +83,13 @@ X-Frame-Options: DENY
         "last_name": "Concepcion"
     }
 }
+
 Note: The activation field in the Subscribers Model API database is only internal to the server and should never be shown to the user clients. However, the activation flag has been set to True.
 
 Requirement 3: User Login
+
 C:\Users\concepcion>http get http://127.0.0.1:8000/subscribers/15/ email_address="marc@company.com" password="marcpassword"
+
 HTTP/1.1 200 OK
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 63
@@ -88,6 +100,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [],
     "user": {
@@ -96,8 +109,11 @@ X-Frame-Options: DENY
 }
 
 Requirement 4: Users List
+
 Case 4-1: With Token
+
 C:\>http get http://127.0.0.1:8000/subscribers/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
+
 HTTP/1.1 200 OK
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 104
@@ -108,6 +124,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [],
     "user": [
@@ -120,6 +137,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http get http://127.0.0.1:8000/subscribers/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
+
 HTTP/1.1 200 OK
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 248
@@ -130,6 +148,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [],
     "user": [
@@ -152,7 +171,9 @@ X-Frame-Options: DENY
 }
 
 Case 4-2: Without Token
+
 C:\>http get http://127.0.0.1:8000/subscribers/
+
 HTTP/1.1 200 OK
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 44
@@ -163,6 +184,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [],
     "user": [
@@ -173,6 +195,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http get http://127.0.0.1:8000/subscribers/
+
 HTTP/1.1 200 OK
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 83
@@ -183,6 +206,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [],
     "user": [
@@ -199,7 +223,9 @@ X-Frame-Options: DENY
 }
 
 Requirement 5: Change Password 
+
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="marcpassword" new_password="marcnewpassword" token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
+
 HTTP/1.1 200 OK
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 131
@@ -210,6 +236,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [],
     "user": {
@@ -221,8 +248,11 @@ X-Frame-Options: DENY
 }
 
 ERROR SCENARIOS
+
 Error 1: Attempt to delete a subscriber which is not part of the requirements.
+
 C:\>http delete http://127.0.0.1:8000/subscribers/15/
+
 HTTP/1.1 405 Method Not Allowed
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 103
@@ -233,6 +263,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -245,7 +276,9 @@ X-Frame-Options: DENY
 }
 
 Error 2: Attempts to access a non-existent user ID
+
 C:\>http get http://127.0.0.1:8000/subscribers/100/ email_address="marc@company.com" password="marcpassword"
+
 HTTP/1.1 404 Not Found
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 75
@@ -256,6 +289,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -268,6 +302,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http put http://127.0.0.1:8000/subscribers/100/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
+
 HTTP/1.1 404 Not Found
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 75
@@ -278,6 +313,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -290,6 +326,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http patch http://127.0.0.1:8000/subscribers/100/ password="marcpassword" new_password="marcnewpassword" token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
+
 HTTP/1.1 404 Not Found
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 75
@@ -300,6 +337,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -312,6 +350,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http delete http://127.0.0.1:8000/subscribers/100/
+
 HTTP/1.1 404 Not Found
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 75
@@ -322,6 +361,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -334,8 +374,11 @@ X-Frame-Options: DENY
 }
 
 Error Handling on Requirement 1: User Subscriber Registration
+
 Error 1-1: Attempt to register to an existing subscriber
+
 C:\>http post http://127.0.0.1:8000/subscribers/ email_address="marc@company.com" password="marcpassword" first_name="Marc" last_name="Concepcion"
+
 HTTP/1.1 409 Conflict
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 76
@@ -346,6 +389,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -358,7 +402,9 @@ X-Frame-Options: DENY
 }
 
 Error 1-2: Attempt to register without either the required E-mail address or Password 
+
 C:\>http post http://127.0.0.1:8000/subscribers/ email_address="roy@company.com" first_name="Roy" last_name="Berry"
+
 HTTP/1.1 400 Bad Request
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 67
@@ -369,6 +415,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -381,6 +428,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http post http://127.0.0.1:8000/subscribers/ password="roypassword"
+
 HTTP/1.1 400 Bad Request
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 72
@@ -391,6 +439,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -403,6 +452,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http post http://127.0.0.1:8000/subscribers/
+
 HTTP/1.1 400 Bad Request
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 111
@@ -413,6 +463,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -428,7 +479,9 @@ X-Frame-Options: DENY
 }
 
 Error 1-3: Subscriber Web Service fails to e-mail token due to SMTP issues with e-mail server.
+
 C:\>http post http://127.0.0.1:8000/subscribers/ email_address="roy@company.com" first_name="Roy" last_name="Berry" password="roypassword"
+
 HTTP/1.1 500 Internal Server Error
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 100
@@ -439,6 +492,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -451,8 +505,11 @@ X-Frame-Options: DENY
 }
 
 Error Handling on Requirement 2: User Activation
+
 Error 2-1: Attempt to activate an already activated subscriber
+
 C:\>http put http://127.0.0.1:8000/subscribers/15/ token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
+
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 91
@@ -463,6 +520,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -475,7 +533,9 @@ X-Frame-Options: DENY
 }
 
 Error 2-2: Attempt to activate without a token
+
 C:\>http put http://127.0.0.1:8000/subscribers/15/
+
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 85
@@ -486,6 +546,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -498,7 +559,9 @@ X-Frame-Options: DENY
 }
 
 Error 2-3: Attempt to activate with an invalid token
+
 C:\>http put http://127.0.0.1:8000/subscribers/15/ token=invalid
+
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 84
@@ -509,6 +572,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -521,8 +585,11 @@ X-Frame-Options: DENY
 }
 
 Error Handling on Requirement 3: User Login
+
 Error 3-1: Attempt to login with neither the required e-mail address nor the password
+
 C:\>http get http://127.0.0.1:8000/subscribers/15/ email_address="marc@company.com"
+
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 59
@@ -533,6 +600,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -545,6 +613,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http get http://127.0.0.1:8000/subscribers/15/ password="password"
+
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 64
@@ -555,6 +624,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -567,6 +637,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http get http://127.0.0.1:8000/subscribers/15/
+
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 97
@@ -577,6 +648,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -594,7 +666,9 @@ X-Frame-Options: DENY
 }
 
 Error 3-2: Attempt to login with an invalid user name or password
+
 C:\>http get http://127.0.0.1:8000/subscribers/15/ email_address="nonexistent@company.com" password="none"
+
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 82
@@ -605,6 +679,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -617,6 +692,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http get http://127.0.0.1:8000/subscribers/15/ email_address="marc@company.com" password="wrong"
+
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 79
@@ -627,6 +703,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -639,7 +716,9 @@ X-Frame-Options: DENY
 }
 
 Error 3-3: Attempt to login with an unactivated subscriber account
+
 C:\>http get http://127.0.0.1:8000/subscribers/17/ email_address="kevin@company.com" password="kevinpassword"
+
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 81
@@ -650,6 +729,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -662,8 +742,11 @@ X-Frame-Options: DENY
 }
 
 Error Handling on Requirement 4: Users List
+
 Error 4-1: Attempt to request for a users list giving an invalid token
+
 C:\>http get http://127.0.0.1:8000/subscribers/ token=invalid
+
 HTTP/1.1 401 Unauthorized
 Allow: GET, POST, HEAD, OPTIONS
 Content-Length: 55
@@ -674,6 +757,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -686,8 +770,11 @@ X-Frame-Options: DENY
 }
 
 Error Handling on Requirement 5: Change Password
+
 Error 5-1: Attempt to change password giving an invalid token
+
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="marcpassword" new_password="marcnewpassword" token=invalid
+
 HTTP/1.1 401 Unauthorized
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 79
@@ -698,6 +785,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -710,7 +798,9 @@ X-Frame-Options: DENY
 }
 
 Error 5-2: Attempt to change password giving an invalid current password
+
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="wrongpassword" new_password="marcnewpassword" token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
+
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 66
@@ -721,6 +811,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -733,7 +824,9 @@ X-Frame-Options: DENY
 }
 
 Error 5-3: Attempt to change password giving insufficient parameters
+
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="marcpassword" new_password="marcnewpassword"
+
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 56
@@ -744,6 +837,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -756,6 +850,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ new_password="marcnewpassword" token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
+
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 59
@@ -766,6 +861,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -778,6 +874,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="wrongpassword" token=mAixZ120MtXUNtvIlzyjdjgblPDZGJ
+
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 63
@@ -788,6 +885,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -800,6 +898,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ password="wrongpassword"
+
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 93
@@ -810,6 +909,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -827,6 +927,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http patch http://127.0.0.1:8000/subscribers/15/ new_password="marcnewpassword"
+
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 89
@@ -837,6 +938,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
@@ -854,6 +956,7 @@ X-Frame-Options: DENY
 }
 
 C:\>http patch http://127.0.0.1:8000/subscribers/15/
+
 HTTP/1.1 400 Bad Request
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
 Content-Length: 126
@@ -864,6 +967,7 @@ Server: WSGIServer/0.2 CPython/3.8.5
 Vary: Accept, Cookie
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
+
 {
     "errors": [
         {
