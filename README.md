@@ -1056,4 +1056,8 @@ X-Frame-Options: DENY
     "user": "null"
 }
 ```
+
+For more inquiries, please feel free to e-mail me at marcanthonyconcepcion@gmail.com.
+Thank you.
+
 # END
