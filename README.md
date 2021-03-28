@@ -1,4 +1,4 @@
-# MARC'S SUBSCRIBER WEB SERVER
+# MARC'S Python Django REST API Demo
 ### Demonstrating REST API using Django
 
 ## HOW TO TEST
