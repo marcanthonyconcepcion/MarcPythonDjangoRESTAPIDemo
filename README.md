@@ -88,7 +88,7 @@ Note: The activation field in the Subscribers Model API database is only interna
 
 ### Requirement 3: User Login
 ```
-C:\Users\concepcion>http get http://127.0.0.1:8000/subscribers/15/ email_address="marc@company.com" password="marcpassword"
+C:\>http get http://127.0.0.1:8000/subscribers/15/ email_address="marc@company.com" password="marcpassword"
 
 HTTP/1.1 200 OK
 Allow: GET, PUT, PATCH, DELETE, HEAD, OPTIONS
